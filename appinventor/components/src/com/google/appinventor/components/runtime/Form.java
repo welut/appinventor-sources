@@ -2216,6 +2216,10 @@ public class Form extends AppInventorCompatActivity
     });
     aboutAppItem.setIcon(android.R.drawable.sym_def_app_icon);
   }
+  
+  public Menu getOptionsMenu() {
+    return optionsMenu;
+  }
 
   /**
    * Set a list of text elements as options menu items

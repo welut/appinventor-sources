@@ -11,6 +11,7 @@ import java.io.IOException;
 import com.google.appinventor.components.annotations.DesignerComponent;
 import com.google.appinventor.components.annotations.DesignerProperty;
 import com.google.appinventor.components.annotations.PropertyCategory;
+import com.google.appinventor.components.annotations.SimpleEvent;
 import com.google.appinventor.components.annotations.SimpleObject;
 import com.google.appinventor.components.annotations.SimpleProperty;
 import com.google.appinventor.components.common.ComponentCategory;
@@ -20,8 +21,8 @@ import com.google.appinventor.components.runtime.util.MediaUtil;
 
 import android.graphics.drawable.Drawable;
 import android.util.Log;
-import android.view.View;
-import android.widget.ImageButton;
+import android.view.Menu;
+import android.view.MenuItem.OnMenuItemClickListener;
 
 @DesignerComponent(version = YaVersion.MENUITEM_COMPONENT_VERSION,
     description = "A Menu Item can only be placed inside Menu components. " +
@@ -31,19 +32,27 @@ import android.widget.ImageButton;
     "Event is launched on user selection.",
     category = ComponentCategory.USERINTERFACE)
 @SimpleObject
-public final class MenuItem extends AndroidViewComponent {
+public final class MenuItem implements Component {
   private static final String LOG_TAG = "MenuItem";
 
 	private android.view.MenuItem item;
+	private ComponentContainer container;
 	
   // Icon path
   private String iconPath = "";
 	
-	protected MenuItem(ComponentContainer container) {
-	  super(container);
-	  item.setActionView(new ImageButton(container.$context()));
+	public MenuItem(ComponentContainer container) {
+	  this.container = container;
+	  Menu menu = container.$form().getOptionsMenu();
+	  item = menu.add(Menu.NONE, Menu.NONE, menu.size(), "")
+    .setOnMenuItemClickListener(new OnMenuItemClickListener() {
+      @Override
+      public boolean onMenuItemClick(android.view.MenuItem arg0) {
+        Click();
+        return true;
+      }
+    });
 	  item.setShowAsAction(android.view.MenuItem.SHOW_AS_ACTION_IF_ROOM);
-	  container.$add(this);
 	}
 	
   /**
@@ -51,8 +60,7 @@ public final class MenuItem extends AndroidViewComponent {
    *
    * @return  menu item text
    */
-  @SimpleProperty(
-      category = PropertyCategory.APPEARANCE)
+  @SimpleProperty(category = PropertyCategory.APPEARANCE)
   public String Text() {
     return item.getTitle().toString();
   }
@@ -92,7 +100,7 @@ public final class MenuItem extends AndroidViewComponent {
   @DesignerProperty(editorType = PropertyTypeConstants.PROPERTY_TYPE_ASSET,
       defaultValue = "")
   @SimpleProperty(description = "Specifies the path of the menu item's icon.")
-  public void Image(String path) {
+  public void Icon(String path) {
     // If it's the same as on the prior call and the prior load was successful,
     // do nothing.
     if (path.equals(iconPath) && item.getIcon() != null) {
@@ -159,10 +167,18 @@ public final class MenuItem extends AndroidViewComponent {
   public void Visible(boolean visibility) {
     item.setVisible(visibility);
   }
+  
+  /**
+   * Event to handle when user selects this menu item.
+   */
+  @SimpleEvent(description = "Event raised when user selects this menu item.")
+  public void Click() {
+    EventDispatcher.dispatchEvent(this, "Click");
+  }
 
   @Override
-  public View getView() {
-    return item.getActionView();
+  public HandlesEventDispatching getDispatchDelegate() {
+    return container.$form();
   }
 
 }
