@@ -32,19 +32,26 @@ import android.view.MenuItem.OnMenuItemClickListener;
     "Event is launched on user selection.",
     category = ComponentCategory.USERINTERFACE)
 @SimpleObject
-public final class MenuItem implements Component {
+public final class MenuItem implements Component, OnCreateOptionsMenuListener {
   private static final String LOG_TAG = "MenuItem";
 
-	private android.view.MenuItem item;
-	private ComponentContainer container;
-	
-  // Icon path
+  private android.view.MenuItem item;
+  private ComponentContainer container;
+
+  private String text = "";
   private String iconPath = "";
+  private Drawable iconDrawable;
+  private boolean enabled;
+  private boolean visible;
 	
 	public MenuItem(ComponentContainer container) {
 	  this.container = container;
-	  Menu menu = container.$form().getOptionsMenu();
-	  item = menu.add(Menu.NONE, Menu.NONE, menu.size(), "")
+	  container.$form().registerForOnCreateOptionsMenu(this);
+	}
+	
+  @Override
+  public void onCreateOptionsMenu(Menu menu) {
+    item = menu.add(Menu.NONE, Menu.NONE, menu.size(), text)
     .setOnMenuItemClickListener(new OnMenuItemClickListener() {
       @Override
       public boolean onMenuItemClick(android.view.MenuItem arg0) {
@@ -52,8 +59,11 @@ public final class MenuItem implements Component {
         return true;
       }
     });
-	  item.setShowAsAction(android.view.MenuItem.SHOW_AS_ACTION_IF_ROOM);
-	}
+    item.setIcon(iconDrawable);
+    item.setEnabled(enabled);
+    item.setVisible(visible);
+    item.setShowAsAction(android.view.MenuItem.SHOW_AS_ACTION_IF_ROOM);
+  }
 	
   /**
    * Returns the text displayed by the menu item.
@@ -62,7 +72,7 @@ public final class MenuItem implements Component {
    */
   @SimpleProperty(category = PropertyCategory.APPEARANCE)
   public String Text() {
-    return item.getTitle().toString();
+    return text;
   }
 
   /**
@@ -74,7 +84,10 @@ public final class MenuItem implements Component {
       defaultValue = "")
   @SimpleProperty
   public void Text(String text) {
-    item.setTitle(text);
+    this.text = text;
+    if (item != null) {
+      item.setTitle(text);
+    }
   }
   
   /**
@@ -103,7 +116,7 @@ public final class MenuItem implements Component {
   public void Icon(String path) {
     // If it's the same as on the prior call and the prior load was successful,
     // do nothing.
-    if (path.equals(iconPath) && item.getIcon() != null) {
+    if (path.equals(iconPath) && iconDrawable != null) {
       return;
     }
 
@@ -112,10 +125,13 @@ public final class MenuItem implements Component {
     // Load image from file.
     if (iconPath.length() > 0) {
       try {
-        Drawable iconDrawable = MediaUtil.getBitmapDrawable(container.$form(), iconPath);
-        item.setIcon(iconDrawable);
+        iconDrawable = MediaUtil.getBitmapDrawable(container.$form(), iconPath);
       } catch (IOException ioe) {
         Log.e(LOG_TAG, "Unable to load " + iconPath);
+        return;
+      }
+      if (item != null) {
+        item.setIcon(iconDrawable);
       }
     }
   }
@@ -129,7 +145,7 @@ public final class MenuItem implements Component {
       category = PropertyCategory.BEHAVIOR,
       description = "If true, user can tap menu item to cause action.")
   public boolean Enabled() {
-    return item.isEnabled();
+    return enabled;
   }
 
   /**
@@ -141,7 +157,10 @@ public final class MenuItem implements Component {
       defaultValue = "True")
   @SimpleProperty
   public void Enabled(boolean enabled) {
-    item.setEnabled(enabled);
+    this.enabled = enabled;
+    if (item != null) {
+      item.setEnabled(enabled);
+    }
   }
   
   /**
@@ -152,7 +171,7 @@ public final class MenuItem implements Component {
   @SimpleProperty(
       category = PropertyCategory.APPEARANCE)
   public boolean Visible() {
-    return item.isVisible();
+    return visible;
   }
 
   /**
@@ -164,8 +183,11 @@ public final class MenuItem implements Component {
       defaultValue = "True")
   @SimpleProperty(description = "Specifies whether the menu item should be visible. "
       + "Value is true if the component is showing and false if hidden from menu.")
-  public void Visible(boolean visibility) {
-    item.setVisible(visibility);
+  public void Visible(boolean visible) {
+    this.visible = visible;
+    if (item != null) {
+      item.setVisible(visible);
+    }
   }
   
   /**
