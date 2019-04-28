@@ -26,7 +26,8 @@ import com.google.gwt.dom.client.DivElement;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Style;
-
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Timer;
 
 import com.google.gwt.user.client.ui.AbsolutePanel;
@@ -56,6 +57,7 @@ public final class MockForm extends MockContainer {
 
     // UI elements
     private Label title;
+    private MockMenu menu;
     private Button menuButton;
     private AbsolutePanel bar;
     private boolean actionBar;
@@ -69,9 +71,15 @@ public final class MockForm extends MockContainer {
       title.setStylePrimaryName("ode-SimpleMockFormTitle");
       title.setHorizontalAlignment(Label.ALIGN_LEFT);
 
+      menu = new MockMenu(editor);
       menuButton = new Button();
       menuButton.setText("\u22ee");
       menuButton.setStylePrimaryName("ode-SimpleMockFormMenuButton");
+      menuButton.addClickHandler(new ClickHandler() {
+        public void onClick(ClickEvent event) {
+          menu.toggle();
+        }
+      });
 
       bar = new AbsolutePanel();
       bar.add(title);
