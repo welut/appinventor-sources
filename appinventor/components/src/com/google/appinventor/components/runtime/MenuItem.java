@@ -1,6 +1,5 @@
 // -*- mode: java; c-basic-offset: 2; -*-
-// Copyright 2009-2011 Google, All Rights reserved
-// Copyright 2011-2018 MIT, All rights reserved
+// Copyright 2019 MIT, All rights reserved
 // Released under the Apache License, Version 2.0
 // http://www.apache.org/licenses/LICENSE-2.0
 
@@ -26,8 +25,9 @@ import android.view.MenuItem.OnMenuItemClickListener;
 
 @DesignerComponent(version = YaVersion.MENUITEM_COMPONENT_VERSION,
     description = "A Menu Item can only be placed inside Menu components. " +
-    "It displays a piece of text specified through the <code>Text</code> property, " +
-    "as well as an optional icon. Additional properties include visibility and enabled/" + 
+    "It displays a piece of text specified by the <code>Text</code> property if " +
+    "shown in options menu, or an icon specified by the <code>Icon</code> property " +
+    "if shown on action bar. Additional properties include visibility and enabled/" + 
     "disabled, all of which can be set in the Designer or Blocks Editor. " +
     "Event is launched on user selection.",
     category = ComponentCategory.USERINTERFACE)
@@ -43,11 +43,12 @@ public final class MenuItem implements Component, OnCreateOptionsMenuListener {
   private Drawable iconDrawable;
   private boolean enabled;
   private boolean visible;
+  private boolean showOnActionBar;
 	
-	public MenuItem(ComponentContainer container) {
-	  this.container = container;
-	  container.$form().registerForOnCreateOptionsMenu(this);
-	}
+  public MenuItem(ComponentContainer container) {
+    this.container = container;
+    container.$form().registerForOnCreateOptionsMenu(this);
+  }
 	
   @Override
   public void onCreateOptionsMenu(Menu menu) {
@@ -62,7 +63,7 @@ public final class MenuItem implements Component, OnCreateOptionsMenuListener {
     item.setIcon(iconDrawable);
     item.setEnabled(enabled);
     item.setVisible(visible);
-    item.setShowAsAction(android.view.MenuItem.SHOW_AS_ACTION_IF_ROOM);
+    ShowOnActionBar(showOnActionBar);
   }
 	
   /**
@@ -190,6 +191,40 @@ public final class MenuItem implements Component, OnCreateOptionsMenuListener {
     }
   }
   
+  /**
+   * Returns true if the menu item is shown on action bar, false otherwise.
+   *
+   * @return  {@code true} iff the menu item is shown on action bar.
+   */
+  @SimpleProperty(
+      category = PropertyCategory.APPEARANCE)
+  public boolean ShowOnActionBar() {
+    return showOnActionBar;
+  }
+
+  /**
+   * Specifies whether the menu item should show on action bar:
+   * If {@code true}, then item will appear as an icon on the action bar
+   * (given that there is enough space);
+   * If {@code false}, then item will always appear as text in the overflow menu.
+   *
+   * @param  showOnActionBar  {@code true} iff the item should appear on action bar.
+   */
+  @DesignerProperty(editorType = PropertyTypeConstants.PROPERTY_TYPE_BOOLEAN,
+      defaultValue = "False")
+  @SimpleProperty(description = "Specifies whether the menu item should show as action: " +
+      "if true, then item will appear as an icon on action bar (given enough room); " +
+      "if false, then item will always appear as text in the overflow menu.")
+  public void ShowOnActionBar(boolean showOnActionBar) {
+    this.showOnActionBar = showOnActionBar;
+    if (item != null) {
+      item.setShowAsAction(
+        showOnActionBar? android.view.MenuItem.SHOW_AS_ACTION_IF_ROOM
+                       : android.view.MenuItem.SHOW_AS_ACTION_NEVER
+      );
+    }
+  }
+
   /**
    * Event to handle when user selects this menu item.
    */
