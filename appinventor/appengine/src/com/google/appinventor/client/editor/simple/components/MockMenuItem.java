@@ -15,7 +15,7 @@ import com.google.gwt.user.client.ui.InlineHTML;
  *
  * @author xy93@cornell.edu (Steven Ye)
  */
-public final class MockMenuItem extends MockComponent {
+public final class MockMenuItem extends MockVisibleComponent {
   
   // Component type name
   public static final String TYPE = "MenuItem";
@@ -36,7 +36,7 @@ public final class MockMenuItem extends MockComponent {
    * @param editor  editor of source file the component belongs to
    */
   public MockMenuItem(SimpleEditor editor) {
-    super(editor, TYPE, new Image(images.label()));
+    super(editor, TYPE, images.label());
 
     // Initialize mock menu item UI
     itemWidget = new InlineHTML();
@@ -86,11 +86,6 @@ public final class MockMenuItem extends MockComponent {
    */
   private void setShowOnActionBarProperty(String text) {
     // Implement this to reflect whether item is shown on action bar in designer
-  }
-
-  @Override
-  public boolean isVisibleComponent() {
-    return true;
   }
 
   // PropertyChangeListener implementation

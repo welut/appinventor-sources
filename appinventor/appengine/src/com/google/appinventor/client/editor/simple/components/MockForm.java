@@ -26,6 +26,7 @@ import com.google.gwt.dom.client.DivElement;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Style;
+import com.google.gwt.dom.client.Style.Cursor;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Timer;
@@ -72,8 +73,11 @@ public final class MockForm extends MockContainer {
       title.setHorizontalAlignment(Label.ALIGN_LEFT);
 
       menu = new MockMenu(editor);
+      MockForm.this.addComponent(menu);
+      formWidget.setWidgetPosition(menu, screenWidth, ACTIONBAR_HEIGHT);
       menuButton = new Button();
       menuButton.setText("\u22ee");
+      menuButton.getElement().getStyle().setCursor(Cursor.POINTER);
       menuButton.setStylePrimaryName("ode-SimpleMockFormMenuButton");
       menuButton.addClickHandler(new ClickHandler() {
         public void onClick(ClickEvent event) {
