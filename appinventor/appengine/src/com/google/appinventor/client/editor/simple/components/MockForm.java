@@ -74,7 +74,6 @@ public final class MockForm extends MockContainer {
 
       menu = new MockMenu(editor);
       MockForm.this.addComponent(menu);
-      formWidget.setWidgetPosition(menu, screenWidth, ACTIONBAR_HEIGHT);
       menuButton = new Button();
       menuButton.setText("\u22ee");
       menuButton.getElement().getStyle().setCursor(Cursor.POINTER);

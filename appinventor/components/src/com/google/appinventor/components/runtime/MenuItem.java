@@ -16,11 +16,11 @@ import com.google.appinventor.components.annotations.SimpleProperty;
 import com.google.appinventor.components.common.ComponentCategory;
 import com.google.appinventor.components.common.PropertyTypeConstants;
 import com.google.appinventor.components.common.YaVersion;
+import com.google.appinventor.components.runtime.errors.IllegalArgumentError;
 import com.google.appinventor.components.runtime.util.MediaUtil;
 
 import android.graphics.drawable.Drawable;
 import android.util.Log;
-import android.view.Menu;
 import android.view.MenuItem.OnMenuItemClickListener;
 
 @DesignerComponent(version = YaVersion.MENUITEM_COMPONENT_VERSION,
@@ -32,7 +32,7 @@ import android.view.MenuItem.OnMenuItemClickListener;
     "Event is launched on user selection.",
     category = ComponentCategory.USERINTERFACE)
 @SimpleObject
-public final class MenuItem implements Component, OnCreateOptionsMenuListener {
+public final class MenuItem implements Component {
   private static final String LOG_TAG = "MenuItem";
 
   private android.view.MenuItem item;
@@ -41,18 +41,20 @@ public final class MenuItem implements Component, OnCreateOptionsMenuListener {
   private String text = "";
   private String iconPath = "";
   private Drawable iconDrawable;
-  private boolean enabled;
-  private boolean visible;
+  private boolean enabled = true;
+  private boolean visible = true;
   private boolean showOnActionBar;
 	
   public MenuItem(ComponentContainer container) {
     this.container = container;
-    container.$form().registerForOnCreateOptionsMenu(this);
+    if (!(container instanceof Menu)) {
+      throw new IllegalArgumentError("MenuItem constructor called with container " + container);
+    }
+    ((Menu) container).addMenuItem(this);
   }
 	
-  @Override
-  public void onCreateOptionsMenu(Menu menu) {
-    item = menu.add(Menu.NONE, Menu.NONE, menu.size(), text)
+  public void addToMenu(android.view.Menu menu) {
+    item = menu.add(android.view.Menu.NONE, android.view.Menu.NONE, menu.size(), text)
     .setOnMenuItemClickListener(new OnMenuItemClickListener() {
       @Override
       public boolean onMenuItemClick(android.view.MenuItem arg0) {

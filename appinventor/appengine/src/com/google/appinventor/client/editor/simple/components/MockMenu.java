@@ -18,9 +18,10 @@ public final class MockMenu extends MockContainer {
   public MockMenu(SimpleEditor editor) {
     super(editor, TYPE, images.listpicker(), new MockHVLayout(ComponentConstants.LAYOUT_ORIENTATION_VERTICAL));
 
+    rootPanel.setHeight("100%");
     menuWidget = new AbsolutePanel();
-    menuWidget.setPixelSize(100, 100);
     menuWidget.setStylePrimaryName("ode-SimpleMockMenu");
+    menuWidget.add(rootPanel);
 
     initComponent(menuWidget);
   }
