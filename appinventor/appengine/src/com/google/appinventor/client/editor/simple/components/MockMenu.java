@@ -10,6 +10,9 @@ public final class MockMenu extends MockContainer {
   public static final String TYPE = "Menu";
   private AbsolutePanel menuWidget;
 
+  // whether the mock menu is opened or closed
+  private boolean open;
+
   /**
    * Creates a new MockMenu component.
    *
@@ -27,6 +30,11 @@ public final class MockMenu extends MockContainer {
   }
 
   @Override
+  public boolean isMenu() {
+    return true;
+  }
+
+  @Override
   protected boolean acceptableSource(DragSource source) {
     MockComponent component = null;
     if (source instanceof MockComponent) {
@@ -38,10 +46,19 @@ public final class MockMenu extends MockContainer {
   }
 
   /**
-   * Toggle visibility of the mock menu.
+   * Whether the menu is shown in designer.
+   *
+   * @return {@code true} iff menu is visible
+   */
+  public boolean isOpen() {
+    return open;
+  }
+
+  /**
+   * Toggle (open or close) the mock menu.
    */
   public void toggle() {
-    menuWidget.setVisible(!menuWidget.isVisible());
+    open = !open;
     refreshForm();
   }
 

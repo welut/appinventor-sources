@@ -26,7 +26,6 @@ import com.google.gwt.dom.client.DivElement;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Style;
-import com.google.gwt.dom.client.Style.Cursor;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Timer;
@@ -72,17 +71,9 @@ public final class MockForm extends MockContainer {
       title.setStylePrimaryName("ode-SimpleMockFormTitle");
       title.setHorizontalAlignment(Label.ALIGN_LEFT);
 
-      menu = new MockMenu(editor);
-      MockForm.this.addComponent(menu);
       menuButton = new Button();
       menuButton.setText("\u22ee");
-      menuButton.getElement().getStyle().setCursor(Cursor.POINTER);
       menuButton.setStylePrimaryName("ode-SimpleMockFormMenuButton");
-      menuButton.addClickHandler(new ClickHandler() {
-        public void onClick(ClickEvent event) {
-          menu.toggle();
-        }
-      });
 
       bar = new AbsolutePanel();
       bar.add(title);
@@ -92,6 +83,27 @@ public final class MockForm extends MockContainer {
 
       setStylePrimaryName("ode-SimpleMockFormTitleBar");
       setSize("100%", TITLEBAR_HEIGHT + "px");
+    }
+
+    /*
+     * Initialize menu (should only be called after components are loaded).
+     */
+    void loadMenu() {
+      for (MockComponent child : children) {
+        if (child instanceof MockMenu) {
+          menu = (MockMenu) child;
+          break;
+        }
+      }
+      if (menu == null) {
+        menu = new MockMenu(editor);
+        addComponent(menu);
+      }
+      menuButton.addClickHandler(new ClickHandler() {
+        public void onClick(ClickEvent event) {
+          menu.toggle();
+        }
+      });
     }
 
     /*
@@ -301,6 +313,12 @@ public final class MockForm extends MockContainer {
     initialized = true;
     // Now that the default for Scrollable is false, we need to force setting the property when creating the MockForm
     setScrollableProperty(getPropertyValue(PROPERTY_NAME_SCROLLABLE));
+  }
+
+  @Override
+  protected void onLoad() {
+    super.onLoad();
+    titleBar.loadMenu();
   }
 
   public void changePreviewSize(int width, int height) {

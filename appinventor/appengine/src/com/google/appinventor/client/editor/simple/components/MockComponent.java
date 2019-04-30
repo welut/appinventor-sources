@@ -359,12 +359,12 @@ public abstract class MockComponent extends Composite implements PropertyChangeL
 
       @Override
       public boolean canDelete() {
-        return !isForm();
+        return !(isForm() || isMenu());
       }
 
       @Override
       public void delete() {
-        if (!isForm()) {
+        if (canDelete()) {
           new DeleteDialog().center();
         }
       }
@@ -430,7 +430,9 @@ public abstract class MockComponent extends Composite implements PropertyChangeL
 
   protected boolean isPropertyVisible(String propertyName) {
     if (propertyName.equals(PROPERTY_NAME_NAME) ||
-        propertyName.equals(PROPERTY_NAME_UUID)) {
+        propertyName.equals(PROPERTY_NAME_UUID) ||
+        (isMenu() && propertyName.equals(MockVisibleComponent.PROPERTY_NAME_WIDTH)) ||
+        (isMenu() && propertyName.equals(MockVisibleComponent.PROPERTY_NAME_HEIGHT))) {
       return false;
     }
     return true;
@@ -636,6 +638,10 @@ public abstract class MockComponent extends Composite implements PropertyChangeL
   }
 
   public boolean isForm() {
+    return false;
+  }
+
+  public boolean isMenu() {
     return false;
   }
 
@@ -989,6 +995,9 @@ public abstract class MockComponent extends Composite implements PropertyChangeL
    * Returns true if this component should be shown in the designer.
    */
   private boolean showComponentInDesigner() {
+    if (isMenu()) {
+      return ((MockMenu) this).isOpen();
+    }
     if (hasProperty(MockVisibleComponent.PROPERTY_NAME_VISIBLE)) {
       boolean visible = Boolean.parseBoolean(getPropertyValue(
           MockVisibleComponent.PROPERTY_NAME_VISIBLE));

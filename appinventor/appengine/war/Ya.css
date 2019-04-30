@@ -1032,6 +1032,7 @@ select.ode-PropertyEditor[disabled] {
   background-color: transparent;
   font: 20px Roboto bold;
   color: white;
+  cursor: pointer;
   display: none;
 }
 
