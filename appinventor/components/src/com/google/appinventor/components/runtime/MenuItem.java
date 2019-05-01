@@ -54,12 +54,13 @@ public final class MenuItem implements Component {
   }
 	
   public void addToMenu(android.view.Menu menu) {
-    item = menu.add(android.view.Menu.NONE, android.view.Menu.NONE, menu.size(), text)
+    item = menu.add(android.view.Menu.NONE, android.view.Menu.NONE, menu.size() + 1, text)
     .setOnMenuItemClickListener(new OnMenuItemClickListener() {
       @Override
       public boolean onMenuItemClick(android.view.MenuItem arg0) {
         Click();
-        return true;
+        // return false for event to propagate to Menu
+        return false;
       }
     });
     item.setIcon(iconDrawable);
@@ -138,7 +139,24 @@ public final class MenuItem implements Component {
       }
     }
   }
-  
+
+  public void setIcon(int assetId) {
+    if (item != null) {
+      item.setIcon(assetId);
+    }
+  }
+
+  /**
+   * Set a custom on-click listener for this item; Click event will no longer be called.
+   *
+   * @param listener  the on-click listener to replace the default Click event
+   */
+  public void setOnClickListener(OnMenuItemClickListener listener) {
+    if (item != null) {
+      item.setOnMenuItemClickListener(listener);
+    }
+  }
+
   /**
    * Returns true if the menu item is active and clickable.
    *

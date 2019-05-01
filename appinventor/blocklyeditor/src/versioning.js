@@ -2259,11 +2259,7 @@ Blockly.Versioning.AllUpgradeMaps =
 
     // For FORM_COMPONENT_VERSION 24:
     // - The AskForPermissions method, PermissionDenied event, and PermissionGranted event were added. No blocks need to be changed.
-    24: "noUpgrade",
-
-    // For FORM_COMPONENT_VERSION 25:
-    // - The MenuItems property, and MenuItemSelected event were added. No blocks need to be changed.
-    25: "noUpgrade"
+    24: "noUpgrade"
 
   }, // End Screen
 

@@ -63,7 +63,6 @@ import com.google.appinventor.components.runtime.errors.PermissionException;
 import com.google.appinventor.components.runtime.multidex.MultiDex;
 import com.google.appinventor.components.runtime.util.AlignmentUtil;
 import com.google.appinventor.components.runtime.util.AnimationUtil;
-import com.google.appinventor.components.runtime.util.ElementsUtil;
 import com.google.appinventor.components.runtime.util.ErrorMessages;
 import com.google.appinventor.components.runtime.util.FileUtil;
 import com.google.appinventor.components.runtime.util.FullScreenVideoUtil;
@@ -74,7 +73,6 @@ import com.google.appinventor.components.runtime.util.PaintUtil;
 import com.google.appinventor.components.runtime.util.ScreenDensityUtil;
 import com.google.appinventor.components.runtime.util.SdkLevel;
 import com.google.appinventor.components.runtime.util.ViewUtil;
-import com.google.appinventor.components.runtime.util.YailList;
 import org.json.JSONException;
 
 import java.io.FileNotFoundException;
@@ -249,9 +247,6 @@ public class Form extends AppInventorCompatActivity
 
   private boolean actionBarEnabled = false;
   private boolean keyboardShown = false;
-
-  private Menu optionsMenu;
-  private YailList optionsMenuItems;
 
   private ProgressDialog progress;
   private static boolean _initialized = false;
@@ -2173,88 +2168,10 @@ public class Form extends AppInventorCompatActivity
     // This procedure is called only once.  To change the items dynamically
     // we would use onPrepareOptionsMenu.
     super.onCreateOptionsMenu(menu);
-    optionsMenu = menu;
-    // add the menu items
-    if (optionsMenuItems == null) {
-      List<String> menuItems = new ArrayList();
-      addExitButtonToMenu(menu, menuItems);
-      addAboutInfoToMenu(menu, menuItems);
-      optionsMenuItems = YailList.makeList(menuItems);
-    } else {
-      MenuItems(optionsMenuItems);
-    }
     for (OnCreateOptionsMenuListener onCreateOptionsMenuListener : onCreateOptionsMenuListeners) {
       onCreateOptionsMenuListener.onCreateOptionsMenu(menu);
     }
     return true;
-  }
-
-  public void addExitButtonToMenu(Menu menu, List<String> menuItems) {
-    String title = "Stop this application";
-    menuItems.add(title);
-    MenuItem stopApplicationItem = menu.add(Menu.NONE, Menu.NONE, 1, title)
-    .setOnMenuItemClickListener(new OnMenuItemClickListener() {
-      public boolean onMenuItemClick(MenuItem item) {
-        MenuItemSelected(item.getOrder(), item.getTitle().toString());
-        showExitApplicationNotification();
-        return true;
-      }
-    });
-    stopApplicationItem.setIcon(android.R.drawable.ic_notification_clear_all);
-  }
-
-  public void addAboutInfoToMenu(Menu menu, List<String> menuItems) {
-    String title = "About this application";
-    menuItems.add(title);
-    MenuItem aboutAppItem = menu.add(Menu.NONE, Menu.NONE, 2, title)
-    .setOnMenuItemClickListener(new OnMenuItemClickListener() {
-      public boolean onMenuItemClick(MenuItem item) {
-        MenuItemSelected(item.getOrder(), item.getTitle().toString());
-        showAboutApplicationNotification();
-        return true;
-      }
-    });
-    aboutAppItem.setIcon(android.R.drawable.sym_def_app_icon);
-  }
-
-  /**
-   * Set a list of text elements as options menu items
-   *
-   * @param itemsList a YailList containing the strings to be added to the menu
-   */
-  @SimpleProperty(description="List of text elements to show as items in the menu.  " +
-                "This will signal an error if the elements are not text strings.",
-      category = PropertyCategory.BEHAVIOR)
-  public void MenuItems(YailList itemsList) {
-    optionsMenuItems = ElementsUtil.elements(itemsList, "Menu");
-    if (optionsMenu == null) {
-      return;   // fill menu once onCreateOptionsMenu is executed
-    }
-    String[] items = optionsMenuItems.toStringArray();
-    optionsMenu.clear();
-    for (int i = 0; i < items.length; i++) {
-      optionsMenu.add(Menu.NONE, Menu.NONE, i+1, items[i])
-      .setOnMenuItemClickListener(new OnMenuItemClickListener() {
-        public boolean onMenuItemClick(MenuItem item) {
-          MenuItemSelected(item.getOrder(), item.getTitle().toString());
-          return true;
-        }
-      });
-    }
-  }
-
-  /**
-   * MenuItems property getter method: returns a copy of the YailList containing
-   * names of option menu items, or an empty list if no menu item exists.
-   *
-   * @return a copy of YailList representing names of menu items
-   */
-  @SimpleProperty(category = PropertyCategory.BEHAVIOR)
-  public YailList MenuItems() {
-    if (optionsMenuItems == null) {
-      return YailList.makeEmptyList();
-    }
-    return YailList.makeList(optionsMenuItems.toStringArray());
   }
 
   @Override
@@ -2267,7 +2184,7 @@ public class Form extends AppInventorCompatActivity
     return false;
   }
 
-  private void showExitApplicationNotification() {
+  public void showExitApplicationNotification() {
     String title = "Stop application?";
     String message = "Stop this application and exit? You'll need to relaunch " +
         "the application to use it again.";
@@ -2289,24 +2206,13 @@ public class Form extends AppInventorCompatActivity
         doNothing);
   }
 
-  /**
-   * Event to handle when the app user selects an item from the options menu.
-   *
-   * @param selectionIndex The index of menu item that is selected.
-   * @param selection The name of menu item that is selected.
-   */
-  @SimpleEvent(description = "Event raised when user selects an item from the options menu.")
-  public void MenuItemSelected(int selectionIndex, String selection) {
-    EventDispatcher.dispatchEvent(this, "MenuItemSelected", selectionIndex, selection);
-  }
-
   private String yandexTranslateTagline = "";
 
   void setYandexTranslateTagline(){
     yandexTranslateTagline = "<p><small>Language translation powered by Yandex.Translate</small></p>";
   }
 
-  private void showAboutApplicationNotification() {
+  public void showAboutApplicationNotification() {
     String title = "About this app";
     String MITtagline = "<p><small><em>Invented with MIT App Inventor<br>appinventor.mit.edu</em></small></p>";
     // Users can hide the taglines by including an HTML open comment <!-- in the about screen message
