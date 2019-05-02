@@ -15,10 +15,10 @@ import com.google.gwt.user.client.ui.InlineHTML;
  * @author xy93@cornell.edu (Steven Ye)
  */
 public final class MockMenuItem extends MockVisibleComponent {
-  
+
   // Component type name
   public static final String TYPE = "MenuItem";
-  
+
   // Property names
   private static final String PROPERTY_NAME_TEXT = "Text";
   private static final String PROPERTY_NAME_ICON = "Icon";
@@ -35,7 +35,7 @@ public final class MockMenuItem extends MockVisibleComponent {
    * @param editor  editor of source file the component belongs to
    */
   public MockMenuItem(SimpleEditor editor) {
-    super(editor, TYPE, images.label());
+    super(editor, TYPE, images.menuitem());
 
     // Initialize mock menu item UI
     itemWidget = new InlineHTML();
@@ -78,7 +78,7 @@ public final class MockMenuItem extends MockVisibleComponent {
   private void setEnabledProperty(String text) {
     MockComponentsUtil.setEnabled(this, text);
   }
-  
+
   /*
    * Sets the item's Visible property to a new value.
    */
@@ -88,7 +88,7 @@ public final class MockMenuItem extends MockVisibleComponent {
       expanded = false;
     }
   }
-  
+
   /*
    * Sets the item's ShowOnActionBar property to a new value.
    */

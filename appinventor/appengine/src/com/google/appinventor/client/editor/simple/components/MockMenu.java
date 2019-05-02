@@ -19,11 +19,11 @@ public final class MockMenu extends MockContainer {
    * @param editor  editor of source file the component belongs to
    */
   public MockMenu(SimpleEditor editor) {
-    super(editor, TYPE, images.listpicker(), new MockHVLayout(ComponentConstants.LAYOUT_ORIENTATION_VERTICAL));
+    super(editor, TYPE, images.menu(), new MockHVLayout(ComponentConstants.LAYOUT_ORIENTATION_VERTICAL));
 
     rootPanel.setHeight("100%");
     menuWidget = new AbsolutePanel();
-    menuWidget.setStylePrimaryName("ode-SimpleMockMenu");
+    menuWidget.setStylePrimaryName("ode-SimpleMockContainer");
     menuWidget.add(rootPanel);
 
     initComponent(menuWidget);
