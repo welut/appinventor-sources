@@ -34,7 +34,7 @@ public class Menu implements Component, ComponentContainer, OnCreateOptionsMenuL
   private ComponentContainer container;
   private final Activity context;
   private android.view.Menu menu;
-  private List<MenuItem> menuItems;
+  private List<MenuItem> items;
 
   // Menu items for About and Stop options
   private MenuItem aboutItem;
@@ -47,7 +47,7 @@ public class Menu implements Component, ComponentContainer, OnCreateOptionsMenuL
   public Menu(ComponentContainer container) {
     this.container = container;
     context = container.$context();
-    menuItems = new LinkedList<MenuItem>();
+    items = new LinkedList<MenuItem>();
     container.$form().registerForOnCreateOptionsMenu(this);
     container.$form().registerForOnOptionsItemSelected(this);
   }
@@ -55,7 +55,7 @@ public class Menu implements Component, ComponentContainer, OnCreateOptionsMenuL
   @Override
   public void onCreateOptionsMenu(android.view.Menu menu) {
     this.menu = menu;
-    for (MenuItem item : menuItems) {
+    for (MenuItem item : items) {
       item.addToMenu(menu);
     }
     addAboutItemToMenu();
@@ -64,7 +64,7 @@ public class Menu implements Component, ComponentContainer, OnCreateOptionsMenuL
   }
 
   public void addMenuItem(MenuItem item) {
-    menuItems.add(item);
+    items.add(item);
     if (menu != null) {
       item.addToMenu(menu);
     }
@@ -155,35 +155,34 @@ public class Menu implements Component, ComponentContainer, OnCreateOptionsMenuL
   }
 
   @Override
-  public boolean onOptionsItemSelected(android.view.MenuItem item) {
-    ItemSelected(item.getOrder(), item.getTitle().toString());
+  public boolean onOptionsItemSelected(android.view.MenuItem selected) {
+    int itemIndex = selected.getOrder();
+    if (itemIndex > 0 && itemIndex <= items.size()) {
+      ItemSelected(itemIndex, items.get(itemIndex - 1));
+    }
     return true;
   }
 
   /**
    * Event to handle when the app user selects an item from the options menu.
    *
-   * @param selectionIndex The index of menu item that is selected (hidden items still take up indices).
-   * @param selection The text of menu item that is selected.
+   * @param itemIndex The index of menu item that is selected (hidden items still take up indices).
+   * @param item The menu item component that is selected.
    */
   @SimpleEvent(description = "Event raised when user selects an item from the options menu.")
-  public void ItemSelected(int selectionIndex, String selection) {
-    EventDispatcher.dispatchEvent(this, "ItemSelected", selectionIndex, selection);
+  public void ItemSelected(int itemIndex, MenuItem item) {
+    EventDispatcher.dispatchEvent(this, "ItemSelected", itemIndex, item);
   }
 
   /**
    * Items property getter method: returns a YailList copy containing
-   * names of items under this menu, or an empty list if no menu item exists.
+   * all items under this menu, or an empty list if no menu item exists.
    *
-   * @return a YailList copy containing names of menu items (including non-visible ones)
+   * @return a YailList copy containing menu item components (including non-visible ones)
    */
   @SimpleProperty(category = PropertyCategory.BEHAVIOR)
   public YailList Items() {
-    List<String> menuNames = new LinkedList<String>();
-    for (MenuItem item : menuItems) {
-      menuNames.add(item.Text());
-    }
-    return YailList.makeList(menuNames);
+    return YailList.makeList(items);
   }
 
   @Override
