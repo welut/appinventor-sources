@@ -7,7 +7,6 @@ package com.google.appinventor.client.editor.simple.components;
 
 import static com.google.appinventor.client.Ode.MESSAGES;
 import com.google.appinventor.client.editor.simple.SimpleEditor;
-import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.InlineHTML;
 
 /**
@@ -42,6 +41,15 @@ public final class MockMenuItem extends MockVisibleComponent {
     itemWidget = new InlineHTML();
     itemWidget.setStylePrimaryName("ode-SimpleMockComponent");
     initComponent(itemWidget);
+  }
+
+  @Override
+  protected boolean isPropertyVisible(String propertyName) {
+    if (propertyName.equals(PROPERTY_NAME_WIDTH) ||
+        propertyName.equals(PROPERTY_NAME_HEIGHT)) {
+      return false;
+    }
+    return super.isPropertyVisible(propertyName);
   }
 
   @Override

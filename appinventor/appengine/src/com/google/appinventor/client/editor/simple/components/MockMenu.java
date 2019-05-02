@@ -35,6 +35,15 @@ public final class MockMenu extends MockContainer {
   }
 
   @Override
+  protected boolean isPropertyVisible(String propertyName) {
+    if (propertyName.equals(PROPERTY_NAME_WIDTH) ||
+        propertyName.equals(PROPERTY_NAME_HEIGHT)) {
+      return false;
+    }
+    return super.isPropertyVisible(propertyName);
+  }
+
+  @Override
   protected boolean acceptableSource(DragSource source) {
     MockComponent component = null;
     if (source instanceof MockComponent) {
