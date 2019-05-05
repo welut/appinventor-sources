@@ -99,6 +99,7 @@ public final class MockForm extends MockContainer {
         menu = new MockMenu(editor);
         addComponent(menu);
       }
+      menu.setEnabled(actionBar);
       menuButton.addClickHandler(new ClickHandler() {
         public void onClick(ClickEvent event) {
           menu.toggle();
@@ -122,6 +123,9 @@ public final class MockForm extends MockContainer {
       } else {
         removeStyleDependentName("ActionBar");
         MockComponentsUtil.setWidgetBackgroundColor(titleBar.bar, "&HFF696969");
+      }
+      if (menu != null) {
+        menu.setEnabled(actionBar);
       }
     }
 
