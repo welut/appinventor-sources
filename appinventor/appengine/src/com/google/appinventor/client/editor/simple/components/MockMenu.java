@@ -23,7 +23,7 @@ public final class MockMenu extends MockContainer {
   // whether the mock menu is opened or closed
   private boolean open;
 
-  // whether the mock menu is openable (false when theme is Classic)
+  // whether the mock menu is openable (false when Action Bar is absent)
   private boolean enabled;
 
   /**
@@ -37,6 +37,7 @@ public final class MockMenu extends MockContainer {
     rootPanel.setHeight("100%");
     menuWidget = new AbsolutePanel();
     menuWidget.setStylePrimaryName("ode-SimpleMockContainer");
+    menuWidget.addStyleName("ode-SimpleMockFormMenu");
     menuWidget.add(rootPanel);
 
     initComponent(menuWidget);

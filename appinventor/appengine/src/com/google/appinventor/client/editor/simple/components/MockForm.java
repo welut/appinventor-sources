@@ -99,12 +99,21 @@ public final class MockForm extends MockContainer {
         menu = new MockMenu(editor);
         addComponent(menu);
       }
-      menu.setEnabled(actionBar);
       menuButton.addClickHandler(new ClickHandler() {
         public void onClick(ClickEvent event) {
           menu.toggle();
         }
       });
+      updateMenuEnabled();
+    }
+
+    /*
+     * Disable menu if action bar is absent.
+     */
+    void updateMenuEnabled() {
+      if (menu != null) {
+        menu.setEnabled(actionBar && isVisible());
+      }
     }
 
     /*
@@ -124,9 +133,7 @@ public final class MockForm extends MockContainer {
         removeStyleDependentName("ActionBar");
         MockComponentsUtil.setWidgetBackgroundColor(titleBar.bar, "&HFF696969");
       }
-      if (menu != null) {
-        menu.setEnabled(actionBar);
-      }
+      updateMenuEnabled();
     }
 
     void setBackgroundColor(String color) {
@@ -657,6 +664,7 @@ public final class MockForm extends MockContainer {
   private void setTitleVisibleProperty(String text) {
     boolean visible = Boolean.parseBoolean(text);
     titleBar.setVisible(visible);
+    titleBar.updateMenuEnabled();
   }
 
   private void setActionBarProperty(String actionBar) {
